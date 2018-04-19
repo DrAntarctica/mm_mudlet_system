@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+    <ScriptPackage>
+        <ScriptGroup isActive="yes" isFolder="yes">
+            <name>mm_scripts</name>
+            <packageName></packageName>
+            <script>-------------------------------------------------
+--         Put your Lua functions here.        --
+--                                             --
+-- Note that you can also use external Scripts --
+-------------------------------------------------
+</script>
+            <eventHandlerList/>
+            <ScriptGroup isActive="yes" isFolder="yes">
+                <name>Mapper</name>
+                <packageName></packageName>
+                <script>-------------------------------------------------
+--         Put your Lua functions here.        --
+--                                             --
+-- Note that you can also use external Scripts --
+-------------------------------------------------
+</script>
+                <eventHandlerList/>
+                <Script isActive="yes" isFolder="no">
+                    <name>Mapper</name>
+                    <packageName></packageName>
+                    <script>mudlet = mudlet or {}; mudlet.mapper_script = true
+
+mirror = {
+	[&quot;n&quot;] = &quot;s&quot;,
+	[&quot;s&quot;] = &quot;n&quot;,
+	[&quot;e&quot;] = &quot;w&quot;,
+	[&quot;w&quot;] = &quot;e&quot;,
+	[&quot;nw&quot;] = &quot;se&quot;,
+	[&quot;sw&quot;] = &quot;ne&quot;,
+	[&quot;ne&quot;] = &quot;sw&quot;,
+	[&quot;se&quot;] = &quot;nw&quot;,
+	[&quot;u&quot;] = &quot;d&quot;,
+	[&quot;up&quot;] = &quot;d&quot;,
+	[&quot;down&quot;] = &quot;u&quot;,
+	[&quot;d&quot;] = &quot;u&quot;
+}
+
+function add_area()
+	local newId, err = addAreaName(info.zone)
+
+	if newId == nil or newId &lt; 1 or err then
+  	echo(&quot;That area name could not be added - error is: &quot;.. err..&quot;\n&quot;)
+		return false
+	else
+  	cecho(&quot;&lt;green&gt;Created new area with the ID of &quot;..newId..&quot;.\n&quot;)
+		return true
+	end
+end
+
+function set_coords()
+  local x,y,z = getRoomCoordinates(previousRoomID)
+  
+  if dir == &quot;n&quot; then
+    y = y+1
+  elseif dir == &quot;ne&quot; then
+    y = y+1
+    x = x+1
+  elseif dir == &quot;e&quot; then
+    x = x+1
+  elseif dir == &quot;se&quot; then
+    y = y-1
+    x = x+1
+  elseif dir == &quot;s&quot; then
+    y = y-1
+  elseif dir == &quot;sw&quot; then
+    y = y-1
+    x = x-1
+  elseif dir == &quot;w&quot; then
+    x = x-1
+  elseif dir == &quot;nw&quot; then
+    y = y+1
+    x = x-1
+  elseif dir == &quot;u&quot; or dir == &quot;up&quot; then
+    z = z+1
+  elseif dir == &quot;d&quot; or dir == &quot;down&quot; then
+    z = z-1
+  end
+  setRoomCoordinates(info.num,x,y,z)
+  centerview(info.num)
+
+end
+
+function set_env()
+	if (env_table[info.terrain] ~= nil) then
+		setRoomEnv(gmcp.room.info.num,env_table[info.terrain])
+	else
+		cecho(&quot;&lt;red&gt; SET NEW ENVIRONMENT.&quot;)
+	end
+end
+
+function proc_room()
+	info = gmcp.room.info
+	
+	-- create area
+	if (old_area ~= info.zone) then
+		previousRoomID = nil
+		old_area = info.zone
+		if add_area() then
+			previousRoomID = nil
+		end
+	end
+	
+	-- create room
+	local newroomid = info.num
+	addRoom(newroomid)
+	setRoomArea(newroomid, info.zone)
+	if (previousRoomID == nil) then
+		setRoomCoordinates(newroomid, 0,0,0)
+	else
+		set_coords()
+	end
+	set_env()
+	setRoomName(newroomid, info.name)
+	
+	-- set exits
+	for dir, rID in pairs(info.exits) do
+		if(dir ~= &quot;door&quot;) then
+			if (getRoomName(rID) ~= nil) then
+				if setExit(info.num, rID, dir) then
+					echo(&quot;\nExit set to room:&quot;..rID..&quot; from &quot;..info.num..&quot;, direction:&quot;..string.upper(dir))
+					if setExit(rID,info.num,mirror[dir]) then
+						echo(&quot;\nExit set to room:&quot;..info.num..&quot; from &quot;..rID..&quot;, direction:&quot;..string.upper(mirror[dir]))
+					else
+						echo(&quot;Failed to set the exit.\n&quot;)
+					end
+				else
+			 		echo(&quot;Failed to set the exit.\n&quot;)
+				end
+			else
+				echo(&quot;\nWaiting for rooms.&quot;)
+			end
+		end
+	end
+	
+end</script>
+                    <eventHandlerList/>
+                </Script>
+                <Script isActive="yes" isFolder="no">
+                    <name>Init Env</name>
+                    <packageName></packageName>
+                    <script>env_table = {
+	[&quot;dense forest&quot;] = 260,
+	[&quot;light forest&quot;] = 260,
+	[&quot;jungle&quot;] = 260,
+	[&quot;grassy field&quot;] = 261,
+	[&quot;mossy ground&quot;] = 261,
+	[&quot;foothills&quot;] = 261,
+	[&quot;hills&quot;] = 261,
+	[&quot;plain&quot;] = 261,
+	[&quot;indoors&quot;] = 262,
+	[&quot;city street&quot;] = 262,
+	[&quot;dusty road&quot;] = 263,
+	[&quot;mountain-road&quot;] = 263,
+	[&quot;gravel road&quot;] = 263,
+	[&quot;slippery floor&quot;] = 263,
+	[&quot;bridge&quot;] = 263,
+	[&quot;paved road&quot;] = 263,
+	[&quot;trail&quot;] = 263,
+	[&quot;rocky ground&quot;] = 264,
+	[&quot;mountainous&quot;] = 264,
+	[&quot;cliff&quot;] = 264,
+	[&quot;dungeon&quot;] = 265,
+	[&quot;subterranean cave&quot;] = 266,
+	[&quot;subterranean caves&quot;] = 266,
+	[&quot;caves of darkness and shadow&quot;] = 266,
+	[&quot;shallow water&quot;] = 267,
+	[&quot;salt water&quot;] = 267,
+	[&quot;fresh-water-sailable&quot;] = 267,
+	[&quot;underwater&quot;] = 267,
+	[&quot;salt-water-sailable&quot;] = 267,
+	[&quot;fresh water&quot;] = 267,
+	[&quot;fresh-water-swimmable&quot;] = 267,
+	[&quot;ice&quot;] = 269,
+	[&quot;air&quot;] = 270,
+	[&quot;void&quot;] = 270
+}
+
+-- dark green
+local r,g,b = unpack(color_table.DarkGreen)
+setCustomEnvColor(260, r,g,b,255)
+
+-- light green
+setCustomEnvColor(261, 0,255,0,255)
+
+-- city blue
+setCustomEnvColor(262, 0,128,128,255)
+
+-- road brown
+setCustomEnvColor(263, 128,128,0,255)
+
+-- mountain red
+setCustomEnvColor(264, 128,0,0,255)
+
+-- sewer purple
+setCustomEnvColor(265, 128,0,128,255)
+
+-- cave gray
+setCustomEnvColor(266, 112,128,144,255)
+
+-- deep water blue
+setCustomEnvColor(267, 0,0,128,255)
+
+-- sand yellow
+setCustomEnvColor(268, 255,255,0,255)
+
+-- ice light blue
+setCustomEnvColor(269, 0,0,255,255)
+
+-- air
+setCustomEnvColor(270, 0,0,0,255)</script>
+                    <eventHandlerList/>
+                </Script>
+                <Script isActive="yes" isFolder="no">
+                    <name>Map Display</name>
+                    <packageName></packageName>
+                    <script>local main = Geyser.Container:new({x=0,y=0,width=&quot;100%&quot;,height=&quot;100%&quot;,name=&quot;mapper container&quot;})
+
+
+local mapper = Geyser.Mapper:new({
+
+  name = &quot;mapper&quot;,
+
+  x = &quot;70%&quot;, y = 0, -- edit here if you want to move it
+
+  width = &quot;30%&quot;, height = &quot;50%&quot;
+
+}, main)</script>
+                    <eventHandlerList/>
+                </Script>
+                <Script isActive="yes" isFolder="no">
+                    <name>NewScript</name>
+                    <packageName></packageName>
+                    <script></script>
+                    <eventHandlerList/>
+                </Script>
+            </ScriptGroup>
+            <Script isActive="yes" isFolder="no">
+                <name>NewScript</name>
+                <packageName></packageName>
+                <script>function getQW()
+	return showQW
+end
+
+function printTable(len, table)
+	local str = &quot;&quot;
+	for i=1, (len-2), 1 do
+			str = str .. table[i] .. &quot;, &quot;;
+	end
+	str = str .. table[len-1] .. &quot;.&quot;;
+	
+	echo(str)
+end</script>
+                <eventHandlerList/>
+            </Script>
+            <Script isActive="yes" isFolder="no">
+                <name>round</name>
+                <packageName></packageName>
+                <script>function round(num, numDecimalPlaces)
+  local mult = 10^(numDecimalPlaces or 0)
+  return math.floor(num * mult + 0.5) / mult
+end</script>
+                <eventHandlerList/>
+            </Script>
+            <Script isActive="yes" isFolder="no">
+                <name>check</name>
+                <packageName></packageName>
+                <script></script>
+                <eventHandlerList/>
+            </Script>
+        </ScriptGroup>
+    </ScriptPackage>
+</MudletPackage>

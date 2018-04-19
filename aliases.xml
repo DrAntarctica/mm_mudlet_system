@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+    <AliasPackage>
+        <AliasGroup isActive="yes" isFolder="yes">
+            <name>mm_aliases</name>
+            <script></script>
+            <command></command>
+            <packageName></packageName>
+            <regex></regex>
+            <Alias isActive="yes" isFolder="no">
+                <name>Quick Who</name>
+                <script>quickWho = {}
+qwLen = 0;
+enableTrigger(&quot;Clean Who&quot;)
+enableTrigger(&quot;Build QW&quot;)
+enableTrigger(&quot;End Who&quot;)
+send(&quot;who&quot;,false)</script>
+                <command></command>
+                <packageName></packageName>
+                <regex>^qw$</regex>
+            </Alias>
+            <Alias isActive="yes" isFolder="no">
+                <name>Save Move</name>
+                <script>if (gmcp.room.info.exits[matches[1]] ~= nil) then
+	tmpdir = matches[1]
+	tmpprev = gmcp.room.info.num
+	send(matches[1], false)
+	new_room = true
+else
+	echo(&quot;You cannot move in that direction.\n&quot;)
+end</script>
+                <command></command>
+                <packageName></packageName>
+                <regex>^(n|s|e|w|nw|ne|sw|se|u|d)$</regex>
+            </Alias>
+            <Alias isActive="yes" isFolder="no">
+                <name>Update Map</name>
+                <script>centerview(gmcp.room.info.num)
+send(&quot;LOOK&quot;, false)</script>
+                <command></command>
+                <packageName></packageName>
+                <regex>^l$</regex>
+            </Alias>
+            <Alias isActive="yes" isFolder="no">
+                <name>Open Door</name>
+                <script>if matches[2] == &quot;n&quot; then
+	send(&quot;open north&quot;,false)
+elseif matches[2] == &quot;s&quot; then
+	send(&quot;open south&quot;,false)
+elseif matches[2] == &quot;e&quot; then
+	send(&quot;open east&quot;,false)
+elseif matches[2] == &quot;w&quot; then
+	send(&quot;open west&quot;,false)
+elseif matches[2] == &quot;u&quot; then
+	send(&quot;open up&quot;,false)
+elseif matches[2] == &quot;d&quot; then
+	send(&quot;open down&quot;,false)
+elseif matches[2] == &quot;ne&quot; then
+	send(&quot;open northeast&quot;,false)
+elseif matches[2] == &quot;nw&quot; then
+	send(&quot;open northwest&quot;,false)
+elseif matches[2] == &quot;se&quot; then
+	send(&quot;open southeast&quot;,false)
+elseif matches[2] == &quot;sw&quot; then
+	send(&quot;open southwest&quot;,false)
+end</script>
+                <command></command>
+                <packageName></packageName>
+                <regex>^o(n|s|e|w|u|d|ne|nw|se|sw)$</regex>
+            </Alias>
+            <AliasGroup isActive="yes" isFolder="yes">
+                <name>Spells</name>
+                <script></script>
+                <command></command>
+                <packageName></packageName>
+                <regex></regex>
+                <Alias isActive="yes" isFolder="no">
+                    <name>Magic Dart</name>
+                    <script>send(&quot;cast 'magic dart' &quot; .. matches[2], false)
+Self.currSpell = &quot;magic dart&quot;</script>
+                    <command></command>
+                    <packageName></packageName>
+                    <regex>cmd (.*)$</regex>
+                </Alias>
+                <Alias isActive="yes" isFolder="no">
+                    <name>Lightning Bolt</name>
+                    <script>send(&quot;cast 'lightning bolt' &quot; .. matches[2], false)
+Self.currSpell = &quot;lightning bolt&quot;</script>
+                    <command> </command>
+                    <packageName></packageName>
+                    <regex>clb (.*)$</regex>
+                </Alias>
+                <Alias isActive="yes" isFolder="no">
+                    <name>default</name>
+                    <script>send(&quot;cast '&quot; .. matches[2] .. &quot;'&quot; .. matches[3], false)
+Self.currSpell = matches[2]</script>
+                    <command></command>
+                    <packageName></packageName>
+                    <regex>^cast (.*)(.*)$</regex>
+                </Alias>
+            </AliasGroup>
+        </AliasGroup>
+    </AliasPackage>
+</MudletPackage>

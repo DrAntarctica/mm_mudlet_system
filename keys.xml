@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+    <KeyPackage>
+        <KeyGroup isActive="yes" isFolder="yes">
+            <name>mm_keys</name>
+            <packageName></packageName>
+            <script></script>
+            <command></command>
+            <keyCode>-1</keyCode>
+            <keyModifier>-1</keyModifier>
+            <Key isActive="yes" isFolder="no">
+                <name>Delete Curr Room</name>
+                <packageName></packageName>
+                <script>deleteRoom(gmcp.room.info.num)</script>
+                <command></command>
+                <keyCode>16777274</keyCode>
+                <keyModifier>0</keyModifier>
+            </Key>
+            <Key isActive="yes" isFolder="no">
+                <name>Add Room</name>
+                <packageName></packageName>
+                <script>proc_room()</script>
+                <command></command>
+                <keyCode>16777275</keyCode>
+                <keyModifier>0</keyModifier>
+            </Key>
+        </KeyGroup>
+    </KeyPackage>
+</MudletPackage>
